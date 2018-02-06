@@ -70,4 +70,4 @@ The core and ui modules may be included as Maven project dependencies.
 
 If your project will also control the installation of the 
 Root Page Injector then the UI module's zip package should be 
-included as a sub package of your projects package. 
+included as a sub package of your project's package. 
