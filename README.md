@@ -1,58 +1,73 @@
-# Sample AEM project template
+# Root Page Injector
 
-This is a project template for AEM-based applications. It is intended as a best-practice set of examples as well as a potential starting point to develop your own functionality.
+Codifies the concept of root pages within a website and exposes 
+such pages via Sling Models.
 
-## Modules
+## Root Pages
 
-The main parts of the template are:
+Most websites present as a tree of pages with rooted branches of 
+content all meeting at a single root - commonly the "Home Page".  
+Many mechanisms commonly afforded end users rely on knowing 
+where they are in relation to their closest section root as well 
+as the ultimate site root.  This project presents the concept of 
+a section root and a site root as technical artifacts and allows 
+their injection via Sling Models.  
 
-* core: Java bundle containing all core functionality like OSGi services, listeners or schedulers, as well as component-related Java code such as servlets or request filters.
-* ui.apps: contains the /apps (and /etc) parts of the project, ie JS&CSS clientlibs, components, templates, runmode specific configs as well as Hobbes-tests
-* ui.content: contains sample content using the components from the ui.apps
-* ui.tests: Java bundle containing JUnit tests that are executed server-side. This bundle is not to be deployed onto production.
-* ui.launcher: contains glue code that deploys the ui.tests bundle (and dependent bundles) to the server and triggers the remote JUnit execution
+### `SiteRootPage`
 
-## How to build
+The `SiteRootPage` is the single root of an entire site.  This 
+root is commonly the "Home Page" though the nature of the page 
+is not technically important.  A site root may be identified 
+in one of two ways.
 
-To build all the modules run in the project root directory the following command with Maven 3:
+1. By setting the `isSiteRoot` on the page's page properties to `true`
+2. By defining a Sling Model implementation of `SiteRootPage` appropriate 
+   to your page's resourceType.
+   
+Instances of the `SiteRootPage` should be adaptable back to `Page`.
 
-    mvn clean install
+### `SectionRootPage`
 
-If you have a running AEM instance you can build and package the whole project and deploy into AEM with  
+The `SectionRootPage` is the root of a section of a site.  It is 
+common for a site to be broken into many coarse grain sections with 
+each section having a content tree below it.  A section root may 
+be identified in one of two ways.
 
-    mvn clean install -PautoInstallPackage
-    
-Or to deploy it to a publish instance, run
+1. By setting the `isSectionRoot` on the page's page properties to `true`
+2. By defining a Sling Model implementation of `SectionRootPage` appropriate 
+   to your page's resourceType.
+   
+Instances of the `SectionRootPage` should be adaptable back to `Page`.
 
-    mvn clean install -PautoInstallPackagePublish
-    
-Or alternatively
+## Usage
 
-    mvn clean install -PautoInstallPackage -Daem.port=4503
+To obtain an instance of `SectionRootPage` or `SiteRootPage` 
+an appropriately typed property simply needs to be annotated as 
+an injected property using Sling Models.
 
-Or to deploy only the bundle to the author, run
+```java
+@Inject
+private SiteRootPage root;
+```
 
-    mvn clean install -PautoInstallBundle
+## Including in a Project 
 
-## Testing
+The core and ui modules may be included as Maven project dependencies. 
 
-There are three levels of testing contained in the project:
+```xml
+<dependency>
+    <groupId>com.avionos.aem.rootpageinjector</groupId>
+    <artifactId>root-page-injector.core</artifactId>
+    <version>${rootpage.injector.version}</version>
+</dependency>
+<dependency>
+    <groupId>com.avionos.aem.rootpageinjector</groupId>
+    <artifactId>root-page-injector.ui.apps</artifactId>
+    <version>${rootpage.injector.version}</version>
+    <type>zip</type>
+</dependency>
+```
 
-* unit test in core: this show-cases classic unit testing of the code contained in the bundle. To test, execute:
-
-    mvn clean test
-
-* server-side integration tests: this allows to run unit-like tests in the AEM-environment, ie on the AEM server. To test, execute:
-
-    mvn clean verify -PintegrationTests
-
-* client-side Hobbes.js tests: JavaScript-based browser-side tests that verify browser-side behavior. To test:
-
-    in the browser, open the page in 'Developer mode', open the left panel and switch to the 'Tests' tab and find the generated 'MyName Tests' and run them.
-
-
-## Maven settings
-
-The project comes with the auto-public repository configured. To setup the repository in your Maven settings, refer to:
-
-    http://helpx.adobe.com/experience-manager/kb/SetUpTheAdobeMavenRepository.html
+If your project will also control the installation of the 
+Root Page Injector then the UI module's zip package should be 
+included as a sub package of your projects package. 
