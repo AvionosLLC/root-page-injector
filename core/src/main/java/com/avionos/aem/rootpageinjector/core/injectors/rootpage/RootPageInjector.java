@@ -69,11 +69,6 @@ public class RootPageInjector implements Injector {
                                     }
                                 }
                             }
-                            /*
-                            if (modelFactory.canCreateFromAdaptable(currentPage.getContentResource(), clazz)) {
-                                return currentPage.getContentResource().adaptTo(clazz);
-                            }
-                            */
                             else if (currentPage.getContentResource().getValueMap().get(SectionRootPage.IS_SECTION_ROOT, false) &&
                                     !SiteRootPage.class.isAssignableFrom(clazz)) {
                                 return new DefaultSectionRootPage(currentPage);
