@@ -50,6 +50,15 @@ an injected property using Sling Models.
 private SiteRootPage root;
 ```
 
+## Rooted Page
+
+The `RootedPage` API expresses the ability to find Section and Site 
+roots from a starting point as well as finding the ancestral path 
+to those roots (typically needed for capabilities like breadcrumbs). 
+
+`com.avionos.aem.rootpageinjector.core.models.rootpage.RootedPage` 
+may be adapted to from a `Resource`.  
+
 ## Including in a Project 
 
 The core and ui modules may be included as Maven project dependencies. 
