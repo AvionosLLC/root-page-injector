@@ -6,6 +6,22 @@
     <packaging>pom</packaging>
     <version>0.1.0</version>
     <description>root-page-injector</description>
+    <name>AEM Root Page Injector</name>
+    <url>https://github.com/AvionosLLC/root-page-injector</url>
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+    <developers>
+        <developer>
+            <name>Paul Michelotti</name>
+            <email>paul.michelotti@avionos.com</email>
+        </developer>
+    </developers>
 
     <modules>
         <module>core</module>
@@ -27,6 +43,11 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
     </distributionManagement>
+
+    <scm>
+        <url>https://github.com/AvionosLLC/root-page-injector</url>
+        <connection>git@github.com:AvionosLLC/root-page-injector.git</connection>
+    </scm>
 
     <properties>
         <aem.host>localhost</aem.host>
