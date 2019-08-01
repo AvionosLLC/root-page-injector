@@ -1,15 +1,18 @@
 package com.avionos.aem.rootpageinjector.core.injectors.rootpage;
 
-import com.avionos.aem.rootpageinjector.core.models.rootpage.*;
+import com.avionos.aem.rootpageinjector.core.models.rootpage.DefaultSectionRootPage;
+import com.avionos.aem.rootpageinjector.core.models.rootpage.DefaultSiteRootPage;
+import com.avionos.aem.rootpageinjector.core.models.rootpage.RootPage;
+import com.avionos.aem.rootpageinjector.core.models.rootpage.SectionRootPage;
+import com.avionos.aem.rootpageinjector.core.models.rootpage.SiteRootPage;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
-import com.google.common.collect.Lists;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.factory.ModelFactory;
 import org.apache.sling.models.spi.DisposalCallbackRegistry;
 import org.apache.sling.models.spi.Injector;
+import org.osgi.service.component.annotations.Component;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Type;
@@ -17,16 +20,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
-@Component(service = {Injector.class}, property = { "service.ranking:Integer=" + Integer.MAX_VALUE })
+@Component(service = { Injector.class }, property = { "service.ranking:Integer=" + Integer.MAX_VALUE })
 public class RootPageInjector implements Injector {
 
     public static final String NAME = "rootpage";
-
-    @Reference
-    private ModelFactory modelFactory;
 
     @Override
     public String getName() {
@@ -34,7 +31,8 @@ public class RootPageInjector implements Injector {
     }
 
     @Override
-    public Object getValue(Object adaptable, String name, Type type, AnnotatedElement element, DisposalCallbackRegistry callbackRegistry) {
+    public Object getValue(Object adaptable, String name, Type type, AnnotatedElement element,
+        DisposalCallbackRegistry callbackRegistry) {
         if (type instanceof Class<?>) {
             Class<?> clazz = (Class<?>) type;
 
@@ -42,13 +40,12 @@ public class RootPageInjector implements Injector {
                 Resource resource = getResource(adaptable);
 
                 if (resource != null) {
-
                     PageManager pageManager = resource.getResourceResolver().adaptTo(PageManager.class);
 
                     if (pageManager != null) {
                         Page currentPage = pageManager.getContainingPage(resource);
 
-                        while (currentPage != null) {
+                        while (currentPage != null && currentPage.getContentResource() != null) {
                             /*
                              * The following mess is due to the fact that the Sling Models implementation will
                              * still adapt if there is ANY model which it can instantiate from a Resource, even
@@ -63,18 +60,18 @@ public class RootPageInjector implements Injector {
                             if (adapted != null) {
                                 List<String> resourceTypes = getAnnotatedResourceTypes(adapted.getClass());
 
-                                for(String currentType : resourceTypes) {
+                                for (String currentType : resourceTypes) {
                                     if (currentPage.getContentResource().isResourceType(currentType)) {
                                         return adapted;
                                     }
                                 }
-                            }
-                            else if (currentPage.getContentResource().getValueMap().get(SectionRootPage.IS_SECTION_ROOT, false) &&
-                                    !SiteRootPage.class.isAssignableFrom(clazz)) {
+                            } else if (currentPage.getContentResource().getValueMap().get(
+                                SectionRootPage.IS_SECTION_ROOT, false) &&
+                                !SiteRootPage.class.isAssignableFrom(clazz)) {
                                 return new DefaultSectionRootPage(currentPage);
-                            }
-                            else if (currentPage.getContentResource().getValueMap().get(SiteRootPage.IS_SITE_ROOT, false) &&
-                                    !SectionRootPage.class.isAssignableFrom(clazz)) {
+                            } else if (currentPage.getContentResource().getValueMap().get(SiteRootPage.IS_SITE_ROOT,
+                                false) &&
+                                !SectionRootPage.class.isAssignableFrom(clazz)) {
                                 return new DefaultSiteRootPage(currentPage);
                             }
 
