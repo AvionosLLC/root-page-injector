@@ -20,7 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Component(service = { Injector.class }, property = { "service.ranking:Integer=" + Integer.MAX_VALUE })
+@Component(service = Injector.class, immediate = true, property = {
+    "service.ranking:Integer=" + Integer.MAX_VALUE
+})
 public class RootPageInjector implements Injector {
 
     public static final String NAME = "rootpage";
