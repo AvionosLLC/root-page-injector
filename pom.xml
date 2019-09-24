@@ -4,7 +4,7 @@
     <groupId>com.avionos.aem.rootpageinjector</groupId>
     <artifactId>root-page-injector</artifactId>
     <packaging>pom</packaging>
-    <version>0.2.1-SNAPSHOT</version>
+    <version>0.3.0</version>
     <description>root-page-injector</description>
     <name>AEM Root Page Injector</name>
     <url>https://github.com/AvionosLLC/root-page-injector</url>
